@@ -2,6 +2,7 @@
 using AuthDemo.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace AuthDemo.Api.Controllers
 {
@@ -10,35 +11,34 @@ namespace AuthDemo.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IConfiguration _config;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IConfiguration config)
         {
             _authService = authService;
+            _config = config;
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser(LoginUser user)
         {
-            if (await _authService.RegisterUser(user))
-            {
-                return Ok("Successfuly done");
-            }
-            return BadRequest("Something went worng");
+            if (!await _authService.RegisterUser(user)) return BadRequest("Something went worng");
+            
+            return Ok("Successfuly done");
         }
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginUser user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            if (await _authService.Login(user))
-            {
-                var tokenString = _authService.GenerateTokenString(user);
-                return Ok(tokenString);
-            }
-            return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+
+            if (!await _authService.Login(user)) return BadRequest();
+
+            byte[] key = Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value);
+            string issuer = _config.GetSection("Jwt:Issuer").Value;
+            string audience = _config.GetSection("Jwt:Audience").Value;
+            string tokenString = user.GenerateTokenString(key, issuer, audience);
+            return Ok(tokenString);
         }
     }
 }
