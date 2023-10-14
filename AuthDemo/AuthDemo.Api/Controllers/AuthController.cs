@@ -22,9 +22,7 @@ namespace AuthDemo.Api.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser(LoginUser user)
         {
-            if (!await _authService.RegisterUser(user)) return BadRequest("Something went worng");
-            
-            return Ok("Successfuly done");
+            return Ok(await _authService.RegisterUser(user));
         }
 
         [HttpPost("Login")]

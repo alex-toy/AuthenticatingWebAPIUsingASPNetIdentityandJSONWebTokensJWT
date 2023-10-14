@@ -14,7 +14,7 @@ namespace AuthDemo.Api.Services
             _config = config;
         }
 
-        public async Task<bool> RegisterUser(LoginUser user)
+        public async Task<string> RegisterUser(LoginUser user)
         {
             var identityUser = new IdentityUser
             {
@@ -22,8 +22,11 @@ namespace AuthDemo.Api.Services
                 Email = user.UserName
             };
 
-            var result = await _userManager.CreateAsync(identityUser, user.Password);
-            return result.Succeeded;
+            IdentityResult result = await _userManager.CreateAsync(identityUser, user.Password);
+
+            if (result.Errors.Any()) return result.Errors.Select(e => e.Description).Aggregate((current, next) => current + ", " + next);
+
+            return "user registered";
         }
 
         public async Task<bool> Login(LoginUser user)
