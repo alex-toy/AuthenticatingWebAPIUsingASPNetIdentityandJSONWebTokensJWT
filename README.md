@@ -9,4 +9,15 @@ In this project, we will see how to Authenticate Web API applications using Asp 
 ```
 Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.Design
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.AspNetCore.Identity
+Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+Microsoft.AspNetCore.Authentication.JwtBearer
+```
+
+### Add Migrations
+```
+Add-Migration InitialCreate
+Update-Database
 ```
