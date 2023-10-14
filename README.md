@@ -12,6 +12,7 @@ Microsoft.EntityFrameworkCore.Design
 Microsoft.EntityFrameworkCore.SqlServer
 Microsoft.AspNetCore.Identity
 Microsoft.AspNetCore.Identity.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Tools
 
 Microsoft.AspNetCore.Authentication.JwtBearer
 ```
